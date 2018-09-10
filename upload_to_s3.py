@@ -22,17 +22,26 @@ def main():
     p.add_argument('destination', help='URL in the form: s3://bucket/key')
     args = p.parse_args()
     setup_logging(verbose=args.verbose)
-    if args.path.endswith('/'):
-        sys.exit('destination URL must not end with /')
     if not Path(args.path).is_file():
         sys.exit('Not a file: {}'.format(args.path))
-    m = re.match(r'^s3://([^/]+)/(.+)$', args.destination)
-    if not m:
-        sys.exit('Invalid S3 URL format: {}'.format(args.destination))
-    bucket_name, object_key = m.groups()
+    bucket_name, object_key = parse_s3_url(args.destination)
+    if object_key.endswith('/'):
+        object_key += Path(args.path).name
     s3 = boto3.resource('s3', region_name=args.region)
+    check_if_s3_file_exists(s3, bucket_name, object_key)
+    upload_file_to_s3(s3, args, bucket_name, object_key)
+
+
+def parse_s3_url(s3_url):
+    m = re.match(r'^s3://([^/]+)/(.+)$', s3_url)
+    if not m:
+        sys.exit('Invalid S3 URL format: {}'.format(s3_url))
+    bucket_name, object_key = m.groups()
+    return bucket_name, object_key
+
+
+def check_if_s3_file_exists(s3, bucket_name, object_key):
     obj = s3.Object(bucket_name=bucket_name, key=object_key)
-    # check if S3 file exists
     try:
         obj.load()
     except Exception as e:
@@ -49,15 +58,21 @@ def main():
         # "Unix programs generally use 2 for command line syntax errors"
         # so let's skip 2 and use 3
         sys.exit(3)
-    extra_args = {
-        'StorageClass': args.storage_class,
-    }
-    if args.public:
-        extra_args['ACL'] = 'public-read'
-    if args.content_type:
-        extra_args['ContentType'] = args.content_type
-    logger.info('upload_file extra_args: %r', extra_args)
-    s3.meta.client.upload_file(args.path, bucket_name, object_key, ExtraArgs=extra_args)
+
+
+def upload_file_to_s3(s3, args, bucket_name, object_key):
+    try:
+        extra_args = {
+            'StorageClass': args.storage_class,
+        }
+        if args.public:
+            extra_args['ACL'] = 'public-read'
+        if args.content_type:
+            extra_args['ContentType'] = args.content_type
+        logger.info('upload_file extra_args: %r', extra_args)
+        s3.meta.client.upload_file(args.path, bucket_name, object_key, ExtraArgs=extra_args)
+    except Exception as e:
+        raise Exception('Failed to upload {} to {} {}: {!r}'.format(args.path, bucket_name, object_key, e))
     logger.debug('Upload done')
 
 
