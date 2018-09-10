@@ -73,7 +73,7 @@ def upload_file_to_s3(s3, args, bucket_name, object_key):
         s3.meta.client.upload_file(args.path, bucket_name, object_key, ExtraArgs=extra_args)
     except Exception as e:
         raise Exception('Failed to upload {} to {} {}: {!r}'.format(args.path, bucket_name, object_key, e))
-    logger.debug('Upload done')
+    print('Uploaded {} to bucket {} key {}'.format(args.path, bucket_name, object_key))
 
 
 def setup_logging(verbose):

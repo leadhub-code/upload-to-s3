@@ -10,7 +10,7 @@ Installation
 ------------
 
 ```shell
-$ pip install 'https://github.com/leadhub-code/upload-to-s3/archive/v0.0.1.zip#egg=upload-to-s3==0.0.1'
+$ pip install 'https://github.com/leadhub-code/upload-to-s3/archive/v0.0.2.zip#egg=upload-to-s3==0.0.2'
 ```
 
 
