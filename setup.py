@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='upload-to-s3',
-    version='0.0.2',
+    version='0.0.3',
     description='Upload a file to AWS S3',
     classifiers=[
         'Programming Language :: Python :: 3.4',
