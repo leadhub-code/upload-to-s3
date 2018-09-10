@@ -1,2 +1,4 @@
-# upload-to-s3
-CLI script for uploading a file to AWS S3
+Upload a file to AWS S3
+=======================
+
+There is awscli with command `aws s3 cp file.txt s3://bucket/path`, but it has no option to not overwrite the destination file.
