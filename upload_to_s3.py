@@ -11,6 +11,11 @@ import sys
 logger = logging.getLogger(__name__)
 
 
+# "Unix programs generally use 2 for command line syntax errors"
+# so let's skip 2 and use 3
+status_code_already_exists = 3
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--region')
@@ -18,6 +23,7 @@ def main():
     p.add_argument('--storage-class', default='STANDARD')
     p.add_argument('--content-type')
     p.add_argument('--verbose', '-v', action='store_true')
+    p.add_argument('--exist-ok', action='store_true', help='return with status code 0 if S3 file exists')
     p.add_argument('path')
     p.add_argument('destination', help='URL in the form: s3://bucket/key')
     args = p.parse_args()
@@ -28,7 +34,9 @@ def main():
     if object_key.endswith('/'):
         object_key += Path(args.path).name
     s3 = boto3.resource('s3', region_name=args.region)
-    check_if_s3_file_exists(s3, bucket_name, object_key)
+    if s3_file_exists(s3, bucket_name, object_key):
+        print('S3 file already exists: bucket {} key {}'.format(bucket_name, object_key), file=sys.stderr)
+        sys.exit(0 if args.exist_ok else status_code_already_exists)
     upload_file_to_s3(s3, args, bucket_name, object_key)
 
 
@@ -40,7 +48,10 @@ def parse_s3_url(s3_url):
     return bucket_name, object_key
 
 
-def check_if_s3_file_exists(s3, bucket_name, object_key):
+def s3_file_exists(s3, bucket_name, object_key):
+    '''
+    Returns True if S3 key exists, False if it does not (404).
+    '''
     obj = s3.Object(bucket_name=bucket_name, key=object_key)
     try:
         obj.load()
@@ -51,13 +62,12 @@ def check_if_s3_file_exists(s3, bucket_name, object_key):
         except Exception as e2:
             logger.debug('e.response exception: %r', e2)
             code = None
-        if code != '404':
+        if code == '404':
+            return False
+        else:
             sys.exit('S3 file check failed: {!r}'.format(e))
     else:
-        print('S3 file already exists: {}'.format(obj), file=sys.stderr)
-        # "Unix programs generally use 2 for command line syntax errors"
-        # so let's skip 2 and use 3
-        sys.exit(3)
+        return True
 
 
 def upload_file_to_s3(s3, args, bucket_name, object_key):
