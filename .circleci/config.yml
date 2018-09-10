@@ -10,7 +10,7 @@ jobs:
     - run: ~/venv/bin/pip install -U pip wheel
     - run: ~/venv/bin/pip install .
     # check that --help works
-    - run: cd / && upload_to_s3 --help
+    - run: cd / && ~/venv/bin/upload_to_s3 --help
 
   build_python35:
     docker:
