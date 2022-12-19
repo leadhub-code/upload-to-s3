@@ -7,10 +7,10 @@ setup(
     version='0.0.3',
     description='Upload a file to AWS S3',
     classifiers=[
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
     ],
     py_modules=['upload_to_s3'],
     install_requires=[
