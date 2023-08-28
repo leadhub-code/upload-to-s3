@@ -4,6 +4,8 @@ Upload a file to AWS S3
 Upload a file to AWS S3, similar to `aws s3 cp file.txt s3://bucket/path/file.txt`,
 but if the destination file (S3 object) already exists, do not overwrite it (do not upload new version).
 
+We use this script in our CI pipelines.
+
 
 Installation
 ------------
