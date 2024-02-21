@@ -11,7 +11,7 @@ Installation
 ------------
 
 ```shell
-$ pip install 'https://github.com/leadhub-code/upload-to-s3/archive/v0.0.3.zip#egg=upload-to-s3==0.0.3'
+$ pip install 'upload-to-s3 @ https://github.com/leadhub-code/upload-to-s3/archive/v0.0.3.zip'
 ```
 
 
@@ -30,5 +30,3 @@ You need to have AWS credentials prepared:
 ```shell
 $ upload_to_s3 --public --content-type text/plain foo.txt s3://bucket/path/foo.txt
 ```
-
-
