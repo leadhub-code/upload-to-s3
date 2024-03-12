@@ -25,8 +25,36 @@ You need to have AWS credentials prepared:
   - for example on CircleCI see "Project settings" -> "Environment Variables"
 - or use any other way documented in [boto3 Credentials](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html)
 
-
-
 ```shell
 $ upload_to_s3 --public --content-type text/plain foo.txt s3://bucket/path/foo.txt
+```
+
+
+AWS IAM permissions
+-------------------
+
+Terraform example:
+
+```terraform
+resource "aws_iam_user" "example_user" {
+  name = "example_user"
+}
+
+resource "aws_iam_user_policy" "example_user" {
+  user = aws_iam_user.example_user.name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = ["s3:GetObject*", "s3:PutObject*"]
+        Resource = ["arn:aws:s3:::example-bucket/example-path/*"]
+        Effect = "Allow"
+      }, {
+        Action = ["s3:GetBucketLocation", "s3:ListBucket"]
+        Resource = ["arn:aws:s3:::example-bucket"]
+        Effect = "Allow"
+      },
+    ]
+  })
+}
 ```

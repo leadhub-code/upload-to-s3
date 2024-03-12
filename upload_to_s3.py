@@ -2,13 +2,13 @@
 
 import argparse
 import boto3
-import logging
+from logging import getLogger
 from pathlib import Path
 import re
 import sys
 
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 # "Unix programs generally use 2 for command line syntax errors"
@@ -33,6 +33,11 @@ def main():
     bucket_name, object_key = parse_s3_url(args.destination)
     if object_key.endswith('/'):
         object_key += Path(args.path).name
+    try:
+        iam = boto3.resource('iam')
+        logger.debug('IAM current user ARN: %r', iam.CurrentUser().arn)
+    except Exception as e:
+        logger.debug('Could not retrieve IAM user: %s', e)
     s3 = boto3.resource('s3', region_name=args.region)
     if s3_file_exists(s3, bucket_name, object_key):
         print('S3 file already exists: bucket {} key {}'.format(bucket_name, object_key), file=sys.stderr)
@@ -41,7 +46,7 @@ def main():
 
 
 def parse_s3_url(s3_url):
-    m = re.match(r'^s3://([^/]+)/(.+)$', s3_url)
+    m = re.match(r'^s3://([a-zA-Z0-9._-]+)/(.+)$', s3_url)
     if not m:
         sys.exit('Invalid S3 URL format: {}'.format(s3_url))
     bucket_name, object_key = m.groups()
@@ -65,7 +70,7 @@ def s3_file_exists(s3, bucket_name, object_key):
         if code == '404':
             return False
         else:
-            sys.exit('S3 file check failed: {!r}'.format(e))
+            sys.exit(f'S3 file check failed: {e!r} bucket_name={bucket_name!r} key={object_key!r}')
     else:
         return True
 
@@ -87,10 +92,12 @@ def upload_file_to_s3(s3, args, bucket_name, object_key):
 
 
 def setup_logging(verbose):
-    from logging import DEBUG, INFO
-    logging.basicConfig(
+    from logging import DEBUG, INFO, basicConfig
+    basicConfig(
         format='%(asctime)s %(name)-20s %(levelname)5s: %(message)s',
         level=DEBUG if verbose else INFO)
+    getLogger('boto3').setLevel(INFO)
+    getLogger('botocore').setLevel(INFO)
 
 
 if __name__ == '__main__':
