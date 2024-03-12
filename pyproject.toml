@@ -1,0 +1,28 @@
+[project]
+name = "upload-to-s3"
+version = "0.0.3"
+description = "Upload a file to AWS S3"
+license = {file = "LICENSE"}
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: MIT License",
+]
+requires-python = ">=3.9"
+dependencies = [
+  "boto3",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/leadhub-code/upload-to-s3"
+"Bug Tracker" = "https://github.com/leadhub-code/upload-to-s3/issues"
+
+[project.scripts]
+upload_to_s3 = "upload_to_s3:main"
+
+[build-system]
+requires = ["setuptools>=43.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
