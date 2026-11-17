@@ -36,12 +36,14 @@ The version is hardcoded in several places; all of them must be updated together
      a new empty `### Unreleased` section above it for the next version
 3. Run `uv lock` to update the version of the `upload-to-s3` package in `uv.lock` (never edit it by hand).
 4. Verify: `make lint check` (the smoke tests check that `__version__` matches `pyproject.toml`
-   and that `upload_to_s3 --version` works).
+   and that `upload_to_s3 --version` works; `tests/test_release_notes.py` checks that README.md has
+   a non-empty changelog section for `__version__`).
 5. Commit: `git commit -am "chore(release): vX.Y.Z"`.
 6. Create an annotated tag on that commit: `git tag -a vX.Y.Z -m "vX.Y.Z"`.
 7. Push the commit and the tag: `git push origin main vX.Y.Z`.
 8. The tag push triggers `.github/workflows/release.yml`: it checks that the tag matches the project version,
-   extracts the `### X.Y.Z - …` changelog section from README.md (fails if it is missing or empty),
+   extracts the `### X.Y.Z - …` changelog section from README.md using `scripts/release_notes.py`
+   (fails if it is missing or empty),
    builds the wheel and sdist, attests their build provenance and creates the GitHub Release with them
    and `SHA256SUMS`; the release notes are the changelog section followed by GitHub-generated notes. Check that the workflow succeeded and the README install URLs work.
 

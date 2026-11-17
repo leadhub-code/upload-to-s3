@@ -43,16 +43,8 @@ jobs:
         env:
           TAG: ${{ github.ref_name }}
         run: |
-          # Section "### X.Y.Z - YYYY-MM-DD" up to the next "### " heading, without leading/trailing blank lines
           mkdir release-notes
-          awk -v heading="### ${TAG#v}" '
-            /^### / { if (found) exit; found = ($0 == heading || index($0, heading " ") == 1); next }
-            found && (started || NF) { started = 1; print }
-          ' README.md | sed -e :a -e '/^\n*$/{$d;N;ba' -e '}' > release-notes/notes.md
-          if ! grep -q '[^[:space:]]' release-notes/notes.md; then
-            echo "::error::No changelog entries for ${TAG#v} in README.md (expected section '### ${TAG#v} - YYYY-MM-DD')"
-            exit 1
-          fi
+          python3 scripts/release_notes.py "${TAG#v}" > release-notes/notes.md
           cat release-notes/notes.md
 
       - name: Build package
