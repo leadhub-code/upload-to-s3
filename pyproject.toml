@@ -17,6 +17,13 @@ dependencies = [
   "boto3",
 ]
 
+[dependency-groups]
+dev = [
+  "flake8",
+  "pytest",
+  "requests",
+]
+
 [project.urls]
 "Homepage" = "https://github.com/leadhub-code/upload-to-s3"
 "Bug Tracker" = "https://github.com/leadhub-code/upload-to-s3/issues"
