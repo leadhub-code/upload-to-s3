@@ -1,5 +1,0 @@
-[flake8]
-
-extend-exclude = venv,.venv,dist,build
-
-max-line-length = 120

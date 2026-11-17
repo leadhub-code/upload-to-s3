@@ -3,6 +3,7 @@ from subprocess import run
 
 def test_import():
     import upload_to_s3
+
     assert upload_to_s3
 
 

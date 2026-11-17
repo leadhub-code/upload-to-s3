@@ -19,7 +19,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "flake8",
+  "ruff",
   "pytest",
   "requests",
 ]
@@ -34,3 +34,16 @@ upload_to_s3 = "upload_to_s3:main"
 [build-system]
 requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+lines-after-imports = 2
+
+[tool.ruff.format]
+quote-style = "single"

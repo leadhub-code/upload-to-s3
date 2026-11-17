@@ -31,10 +31,8 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install --group dev
 
-    - name: Lint with flake8 (essentials)
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+    - run: ruff check
+    - run: ruff format --check
 
     - run: pip install .
     - run: upload_to_s3 --help
@@ -47,7 +45,3 @@ jobs:
         TEST_AWS_S3_PREFIX: "${{ secrets.TEST_AWS_S3_PREFIX }}"
       run: |
         python -m pytest -vvv --tb=native tests
-
-    - name: Lint with flake8 (full)
-      run: |
-        flake8 . --count --statistics
