@@ -39,6 +39,22 @@ jobs:
             exit 1
           fi
 
+      - name: Extract release notes from the README changelog
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          # Section "### X.Y.Z - YYYY-MM-DD" up to the next "### " heading, without leading/trailing blank lines
+          mkdir release-notes
+          awk -v heading="### ${TAG#v}" '
+            /^### / { if (found) exit; found = ($0 == heading || index($0, heading " ") == 1); next }
+            found && (started || NF) { started = 1; print }
+          ' README.md | sed -e :a -e '/^\n*$/{$d;N;ba' -e '}' > release-notes/notes.md
+          if ! grep -q '[^[:space:]]' release-notes/notes.md; then
+            echo "::error::No changelog entries for ${TAG#v} in README.md (expected section '### ${TAG#v} - YYYY-MM-DD')"
+            exit 1
+          fi
+          cat release-notes/notes.md
+
       - name: Build package
         run: uv build
 
@@ -70,6 +86,12 @@ jobs:
           path: dist/
           if-no-files-found: error
 
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-notes
+          path: release-notes/
+          if-no-files-found: error
+
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -83,9 +105,17 @@ jobs:
           name: dist
           path: dist/
 
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-notes
+          path: release-notes/
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           TAG: ${{ github.ref_name }}
-        run: gh release create "$TAG" dist/* --verify-tag --title "$TAG" --generate-notes
+        run: |
+          # the generated notes (PR list, full changelog link) are appended after the changelog section
+          gh release create "$TAG" dist/* --verify-tag --title "$TAG" \
+            --notes-file release-notes/notes.md --generate-notes
