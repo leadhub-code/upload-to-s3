@@ -15,7 +15,7 @@ import sys
 import boto3
 
 
-__version__ = '0.0.3'
+__version__ = '0.1.0'
 
 logger = getLogger(__name__)
 
