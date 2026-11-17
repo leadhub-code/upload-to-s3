@@ -9,6 +9,8 @@ import sys
 import boto3
 
 
+__version__ = '0.0.3'
+
 logger = getLogger(__name__)
 
 
@@ -19,6 +21,7 @@ status_code_already_exists = 3
 
 def main():
     p = argparse.ArgumentParser()
+    p.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
     p.add_argument('--region')
     p.add_argument('--public', action='store_true')
     p.add_argument('--storage-class', default='STANDARD')
