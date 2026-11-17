@@ -10,6 +10,22 @@ We use this script in our CI pipelines.
 Installation
 ------------
 
+Requires Python 3.11 or newer.
+
+Using [uv](https://docs.astral.sh/uv/):
+
+```shell
+$ uv tool install 'git+https://github.com/leadhub-code/upload-to-s3@v0.0.3'
+```
+
+or run it without installing:
+
+```shell
+$ uvx --from 'git+https://github.com/leadhub-code/upload-to-s3@v0.0.3' upload_to_s3 --help
+```
+
+Using pip:
+
 ```shell
 $ pip install 'upload-to-s3 @ https://github.com/leadhub-code/upload-to-s3/archive/v0.0.3.zip'
 ```
@@ -28,6 +44,13 @@ You need to have AWS credentials prepared:
 ```shell
 $ upload_to_s3 --public --content-type text/plain foo.txt s3://bucket/path/foo.txt
 ```
+
+If the destination object already exists, it is not overwritten and `upload_to_s3` exits with status code 3
+(or 0 when `--exist-ok` is used).
+
+Note: `--public` sets the `public-read` ACL. Buckets with ACLs disabled
+(Object Ownership "Bucket owner enforced", the default for buckets created since April 2023)
+reject such uploads.
 
 
 AWS IAM permissions
@@ -58,3 +81,16 @@ resource "aws_iam_user_policy" "example_user" {
   })
 }
 ```
+
+
+Development
+-----------
+
+```shell
+$ uv sync                  # create .venv with dev dependencies
+$ uv run pytest tests      # E2E tests run only when TEST_AWS_S3_PREFIX and AWS credentials are set
+$ uv run ruff check
+$ uv run ruff format
+```
+
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/).
