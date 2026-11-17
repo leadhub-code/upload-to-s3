@@ -17,33 +17,33 @@ contains a wheel that can be installed directly from its URL.
 Using [uv](https://docs.astral.sh/uv/):
 
 ```shell
-$ uv tool install https://github.com/leadhub-code/upload-to-s3/releases/download/v0.1.0/upload_to_s3-0.1.0-py3-none-any.whl
+$ uv tool install https://github.com/leadhub-code/upload-to-s3/releases/download/v0.1.1/upload_to_s3-0.1.1-py3-none-any.whl
 ```
 
 or run it without installing:
 
 ```shell
-$ uvx --from https://github.com/leadhub-code/upload-to-s3/releases/download/v0.1.0/upload_to_s3-0.1.0-py3-none-any.whl upload-to-s3 --help
+$ uvx --from https://github.com/leadhub-code/upload-to-s3/releases/download/v0.1.1/upload_to_s3-0.1.1-py3-none-any.whl upload-to-s3 --help
 ```
 
 or run the single-file script directly (dependencies are declared in the script using
 [inline script metadata](https://packaging.python.org/en/latest/specifications/inline-script-metadata/)):
 
 ```shell
-$ uv run https://raw.githubusercontent.com/leadhub-code/upload-to-s3/v0.1.0/upload_to_s3.py --help
+$ uv run https://raw.githubusercontent.com/leadhub-code/upload-to-s3/v0.1.1/upload_to_s3.py --help
 ```
 
 Using pip:
 
 ```shell
-$ pip install https://github.com/leadhub-code/upload-to-s3/releases/download/v0.1.0/upload_to_s3-0.1.0-py3-none-any.whl
+$ pip install https://github.com/leadhub-code/upload-to-s3/releases/download/v0.1.1/upload_to_s3-0.1.1-py3-none-any.whl
 ```
 
 Release assets come with a `SHA256SUMS` file and a build provenance attestation,
 which can be verified using the [GitHub CLI](https://cli.github.com/):
 
 ```shell
-$ gh attestation verify upload_to_s3-0.1.0-py3-none-any.whl --repo leadhub-code/upload-to-s3
+$ gh attestation verify upload_to_s3-0.1.1-py3-none-any.whl --repo leadhub-code/upload-to-s3
 ```
 
 
@@ -125,6 +125,8 @@ The project follows [Semantic Versioning](https://semver.org/);
 while the version is `0.x.y`, a breaking change bumps the minor version.
 
 ### Unreleased
+
+### 0.1.1 - 2026-11-17
 
 - Fixed: an object created by someone else (e.g. a parallel CI job) between the existence check
   and the upload is no longer overwritten; the file is uploaded using S3 conditional write (`If-None-Match: *`).
