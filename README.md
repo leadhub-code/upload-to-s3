@@ -21,7 +21,7 @@ $ uv tool install 'git+https://github.com/leadhub-code/upload-to-s3@v0.0.3'
 or run it without installing:
 
 ```shell
-$ uvx --from 'git+https://github.com/leadhub-code/upload-to-s3@v0.0.3' upload_to_s3 --help
+$ uvx --from 'git+https://github.com/leadhub-code/upload-to-s3@v0.0.3' upload-to-s3 --help
 ```
 
 Using pip:
@@ -42,10 +42,10 @@ You need to have AWS credentials prepared:
 - or use any other way documented in [boto3 Credentials](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html)
 
 ```shell
-$ upload_to_s3 --public --content-type text/plain foo.txt s3://bucket/path/foo.txt
+$ upload-to-s3 --public --content-type text/plain foo.txt s3://bucket/path/foo.txt
 ```
 
-If the destination object already exists, it is not overwritten and `upload_to_s3` exits with status code 3
+If the destination object already exists, it is not overwritten and `upload-to-s3` exits with status code 3
 (or 0 when `--exist-ok` is used).
 
 Note: `--public` sets the `public-read` ACL. Buckets with ACLs disabled

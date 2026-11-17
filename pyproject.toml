@@ -31,6 +31,7 @@ dev = [
 
 [project.scripts]
 upload_to_s3 = "upload_to_s3:main"
+upload-to-s3 = "upload_to_s3:main"
 
 [build-system]
 requires = ["setuptools>=77"]

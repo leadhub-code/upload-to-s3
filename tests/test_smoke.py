@@ -11,6 +11,10 @@ def test_run_help():
     run(['upload_to_s3', '--help'], check=True, capture_output=True, input=b'')
 
 
+def test_run_help_alias():
+    run(['upload-to-s3', '--help'], check=True, capture_output=True, input=b'')
+
+
 def test_run_version():
     import upload_to_s3
 
