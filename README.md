@@ -63,6 +63,11 @@ $ upload-to-s3 --public --content-type text/plain foo.txt s3://bucket/path/foo.t
 
 If the destination object already exists, it is not overwritten and `upload-to-s3` exits with status code 3
 (or 0 when `--exist-ok` is used).
+The file is uploaded using [S3 conditional write](https://docs.aws.amazon.com/AmazonS3/latest/userguide/conditional-writes.html),
+so the object is not overwritten even if someone else creates it at the same time (e.g. a parallel CI job).
+The file is uploaded in a single request (no multipart upload), so the maximum file size is 5 GiB.
+
+Run `upload-to-s3 --help` to see all options.
 
 Note: `--public` sets the `public-read` ACL. Buckets with ACLs disabled
 (Object Ownership "Bucket owner enforced", the default for buckets created since April 2023)
