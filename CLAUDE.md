@@ -23,11 +23,19 @@ The version is hardcoded in several places; all of them must be updated together
 2. Update the version in:
    - `upload_to_s3.py` – `__version__ = 'X.Y.Z'`
    - `pyproject.toml` – `version = "X.Y.Z"`
-   - `README.md` – all `@vPREV` / `/vPREV.zip` references in the Installation section
-     (`grep -n 'vPREV' README.md`)
+   - `README.md` – all `vPREV` (tag) and `PREV` (wheel file name) references in the Installation section
+     (`grep -n 'PREV' README.md`)
 3. Run `uv lock` to update the version of the `upload-to-s3` package in `uv.lock` (never edit it by hand).
 4. Verify: `make lint check` (the smoke tests check that `__version__` matches `pyproject.toml`
    and that `upload_to_s3 --version` works).
 5. Commit: `git commit -am "chore(release): vX.Y.Z"`.
 6. Create an annotated tag on that commit: `git tag -a vX.Y.Z -m "vX.Y.Z"`.
 7. Push the commit and the tag: `git push origin main vX.Y.Z`.
+8. The tag push triggers `.github/workflows/release.yml`: it checks that the tag matches the project version,
+   builds the wheel and sdist, attests their build provenance and creates the GitHub Release with them
+   and `SHA256SUMS`. Check that the workflow succeeded and the README install URLs work.
+
+The package is not published to PyPI (it is an internal CI tool); the GitHub Release assets are the distribution.
+
+Runtime dependencies are declared twice: in `pyproject.toml` (`[project] dependencies`) and in the PEP 723
+`# /// script` header of `upload_to_s3.py` (used by `uv run upload_to_s3.py`). Keep them in sync.

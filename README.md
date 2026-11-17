@@ -11,23 +11,39 @@ Installation
 ------------
 
 Requires Python 3.11 or newer.
+The package is not published on PyPI; each [GitHub Release](https://github.com/leadhub-code/upload-to-s3/releases)
+contains a wheel that can be installed directly from its URL.
 
 Using [uv](https://docs.astral.sh/uv/):
 
 ```shell
-$ uv tool install 'git+https://github.com/leadhub-code/upload-to-s3@v0.0.3'
+$ uv tool install https://github.com/leadhub-code/upload-to-s3/releases/download/v0.0.4/upload_to_s3-0.0.4-py3-none-any.whl
 ```
 
 or run it without installing:
 
 ```shell
-$ uvx --from 'git+https://github.com/leadhub-code/upload-to-s3@v0.0.3' upload-to-s3 --help
+$ uvx --from https://github.com/leadhub-code/upload-to-s3/releases/download/v0.0.4/upload_to_s3-0.0.4-py3-none-any.whl upload-to-s3 --help
+```
+
+or run the single-file script directly (dependencies are declared in the script using
+[inline script metadata](https://packaging.python.org/en/latest/specifications/inline-script-metadata/)):
+
+```shell
+$ uv run https://raw.githubusercontent.com/leadhub-code/upload-to-s3/v0.0.4/upload_to_s3.py --help
 ```
 
 Using pip:
 
 ```shell
-$ pip install 'upload-to-s3 @ https://github.com/leadhub-code/upload-to-s3/archive/v0.0.3.zip'
+$ pip install https://github.com/leadhub-code/upload-to-s3/releases/download/v0.0.4/upload_to_s3-0.0.4-py3-none-any.whl
+```
+
+Release assets come with a `SHA256SUMS` file and a build provenance attestation,
+which can be verified using the [GitHub CLI](https://cli.github.com/):
+
+```shell
+$ gh attestation verify upload_to_s3-0.0.4-py3-none-any.whl --repo leadhub-code/upload-to-s3
 ```
 
 
