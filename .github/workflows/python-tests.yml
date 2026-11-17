@@ -42,7 +42,10 @@ jobs:
         run: uv build
 
       - name: Smoke test of the built wheel
-        run: uv tool run --from ./dist/upload_to_s3-*.whl upload_to_s3 --help
+        run: uv tool run --from ./dist/upload_to_s3-*.whl upload-to-s3 --help
+
+      - name: Smoke test of the single-file script (PEP 723 inline metadata)
+        run: uv run --script upload_to_s3.py --version
 
       - name: Test with pytest
         env:
