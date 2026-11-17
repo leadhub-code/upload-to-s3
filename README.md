@@ -115,3 +115,41 @@ $ uv run ruff format
 ```
 
 Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/).
+
+
+Changelog
+---------
+
+All notable changes are listed here, newest first.
+The project follows [Semantic Versioning](https://semver.org/);
+while the version is `0.x.y`, a breaking change bumps the minor version.
+
+### Unreleased
+
+- Fixed: an object created by someone else (e.g. a parallel CI job) between the existence check
+  and the upload is no longer overwritten; the file is uploaded using S3 conditional write (`If-None-Match: *`).
+- Changed: the file is uploaded in a single request (no multipart upload); files larger than 5 GiB are rejected.
+- Changed: AWS errors are reported without a traceback; a 403 error mentions the `s3:ListBucket` permission.
+- Changed: the caller identity (STS `GetCallerIdentity`) is logged only with `--verbose`.
+- Changed: requires boto3 1.35.2 or newer.
+
+### 0.1.0 - 2026-11-17
+
+- **Breaking:** requires Python 3.11 or newer.
+- Added: `--version` option.
+- Added: `upload-to-s3` command (the old name `upload_to_s3` still works).
+- Added: the script can be run directly using `uv run upload_to_s3.py`
+  (dependencies are declared using PEP 723 inline script metadata).
+- Added: wheel and sdist are published as GitHub Release assets, with `SHA256SUMS` and build provenance attestation.
+
+### 0.0.3 - 2018-09-10
+
+- Added: `--exist-ok` option (exit with status code 0 if the destination object already exists).
+
+### 0.0.2 - 2018-09-10
+
+- Added: if the destination ends with `/`, the source file name is appended to it.
+
+### 0.0.1 - 2018-09-10
+
+- Initial release.
